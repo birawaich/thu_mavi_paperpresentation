@@ -12,7 +12,7 @@ pipe_v2_small = pipeline(task="depth-estimation", model="depth-anything/Depth-An
 # load image
 # Specify the directory containing the images
 directory = "./samples"
-filename ="sbb_uw.JPG"
+filename ="tea.JPG"
 
 # List all files in the directory
 files = os.listdir(directory)
