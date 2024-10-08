@@ -5,9 +5,9 @@ import demo
 
 ### SETTINGS
 
-MODE = 'FILE' #what to do: either FILE or WEBCAM
+MODE = 'WEBCAM' #what to do: either FILE or WEBCAM
 
-PIPE = 'v1_small' #pipe to load
+PIPE = 'v2_small' #pipe to load
 
 directory = "./samples" #folder to get samples from
 filename ="tea.JPG" #specific image (if empty: take first file in samples)
