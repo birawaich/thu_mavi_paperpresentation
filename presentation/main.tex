@@ -1,5 +1,7 @@
 \documentclass[12pt]{beamer}
 \usetheme{Malmoe}
+\useoutertheme{default}
+\setbeamertemplate{page number in head/foot}[totalframenumber] %add frame numbers in a very neat way
 \usepackage{siunitx}
 \usepackage{hyperref}
 \usepackage{cancel}
@@ -24,13 +26,12 @@
 
 \title{Paper Presentation: Depth Anything}
 \subtitle{\begin{itemize}
-        \item Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data (V1)
-        \item Depth Anything V2 (V2)
+        \item Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data (V1)\footnote{ \scriptsize \textit{Lihe Yang, Bingyi Kang, Zilong Huang, Xiaogang Xu, Jiashi Feng, Hengshuang Zhao}; Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024, pp. 10371-10381}
+        \item Depth Anything V2 (V2)\footnote{\scriptsize \textit{Lihe Yang,Bingyi Kang Zilong Huang, Zhen Zhao, Xiaogang Xu, Jiashi Feng, Hengshuang Zhao}; arXiv, 2024, arxiv.org/abs/2406.09414 }
     \end{itemize}}
 \author{Benjamin Stadler}
-\institute{Tsinghua University \\
-    Machine Vision (Fall 2024) \\
-Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
+\institute{Tsinghua University; Class: Machine Vision (Fall 2024) \\
+    Exchange Student from ETHZ; Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
 \date{October 2024}
 
 
@@ -43,9 +44,13 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
     \frametitle{At a Glance}
 
     \begin{itemize}
-        \item[What] Molecular Depth Estimation (MDE)
+        \item[What] Molecular Depth Estimation (MDE), Foundation Model
         \item[Who] HKU, TikTok
-        \item[When] April 2024 (V1), June 2024 (V2)
+        \item[When]
+        \begin{itemize}
+            \item[V1] April 2024 in CVPR
+            \item[V2] June 2024 on arXiv, in December at NeurIPS Conference
+        \end{itemize}
         \item[How]
         \begin{itemize}
             \item[V1] known techniques + train with \underline{unlabeled data}
@@ -66,7 +71,7 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
 %have a teacher, student model; with segmentation
 \begin{frame}
     \frametitle{Architecture V1}
-    \framesubtitle{Overview}
+    %\framesubtitle{Overview}
     
     \begin{columns}
         
@@ -110,59 +115,7 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
 
 
 
-\begin{frame}
-    \frametitle{Architecture V1}
-    \framesubtitle{Details}
-    
-    \begin{columns}
-        \column{0.4\textwidth}
-        \begin{tikzpicture}[node distance=2cm]
-            
-            % Nodes
-             \node (startImage) [imageblock] {\includegraphics[width=2cm]{./figures/tianjin_orig.JPG}};
-            \node (perturbations) [process, below of=startImage, yshift=0.8cm] {\small Perturbations};
-            \node (imageMiddle) [imageblock, below of=perturbations, yshift=+0.8cm] {\includegraphics[width=2cm]{./figures/cutmix_example.png}};
-            \node (encoderStatic) [process, below of=imageMiddle, yshift=0.8cm, xshift=-1.3cm] {\small Encoder Static};
-            \node (encoderDynamic) [process, below of=imageMiddle, yshift=0.8cm, xshift=1.3cm] {\small Encoder};
-            \node (decoder) [process, below of=encoderStatic, yshift=1.2cm, xshift=1.3cm] {\small Decoder};
-            \node (imageEnd) [imageblock, below of=decoder, yshift=+0.8cm] {\includegraphics[width=2cm]{./figures/tianjin_depthmap_v1-small.png}};
-            
-            % Arrows
-            \draw [arrow] (startImage) -- (perturbations);
-            \draw [arrow] (perturbations) -- (imageMiddle);
-            \draw [arrow] (imageMiddle) -- (encoderStatic);
-            \draw [arrow] (imageMiddle) -- (encoderDynamic);
-            \draw [arrow] (encoderDynamic) -- (decoder);
-            \draw [arrow] (encoderStatic) -- (decoder);
-            \draw [arrow] (decoder) -- (imageEnd);
-            
-        \end{tikzpicture}
-    
-        \column{0.6\textwidth}
-        \pause
-        
-        \begin{itemize}
-            \item<2-> Perturbations (only for $S$)
-            \begin{itemize}
-                \item[$\in\hat{\mathcal{D}}^u$] color shift + CutMix
-                \item[$\in\mathcal{D}^l$] horizontal flip
-            \end{itemize}
-            $\leadsto$ be more robust
-        
-            \item<3-> Encoders
-            \begin{itemize}
-                \item[Normal] $\leftarrow$ DINOv2 encoder
-                \item[Static] $\leftarrow$ frozen DINOv2 encoder
-                \item Linked by a feature alignment loss
-            \end{itemize}
-            $\leadsto$ auxiliary supervision
-            
-            \item<4-> Decoder $\leftarrow$ DPT decoder (as in MiDaS)
-            
-        \end{itemize}
-    \end{columns}
-    
-\end{frame}
+
 
 \begin{frame}
     \frametitle{Architecture V2}
@@ -271,17 +224,18 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
         \centering
         \includegraphics[width=0.49\textwidth]{./figures/summary_v1.jpg}
         \includegraphics[width=0.49\textwidth]{./figures/summary_v2.jpeg}
-        \caption{Summary of Depth Anything V1 (left) and V2 (right).}
+        \includegraphics[width=0.4\textwidth]{./figures/summary_action.jpeg}
+        \caption{Humorous Summary of Depth Anything V1 (left) and V2 (right) and why one wants to know about it (bottom).}
         \label{fig:summary}
     \end{figure}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[noframenumbering]
     \frametitle{Sources}
     \scriptsize
     
-    \textbf{Presentation \& Code} \href{https://github.com/birawaich/thu_mavi_paperpresentation}{Github}\footnote{ \tiny For print: \url{github.com/birawaich/thu_mavi_paperpresentation}}
+    \textbf{Presentation \& Code} \href{https://github.com/birawaich/thu_mavi_paperpresentation}{GitHub}\footnote{ \tiny For print: \url{github.com/birawaich/thu_mavi_paperpresentation}}
     
     \textbf{Papers}
     \begin{itemize}
@@ -303,8 +257,66 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
     
 \end{frame}
 
+\begin{frame}[noframenumbering]
+    \frametitle{Backup Slides}
+\end{frame}
 
-\begin{frame}
+\begin{frame}[noframenumbering]
+    \frametitle{Architecture V1}
+    \framesubtitle{Details}
+    
+    \begin{columns}
+        \column{0.4\textwidth}
+        \begin{tikzpicture}[node distance=2cm]
+            
+            % Nodes
+            \node (startImage) [imageblock] {\includegraphics[width=2cm]{./figures/tianjin_orig.JPG}};
+            \node (perturbations) [process, below of=startImage, yshift=0.8cm] {\small Perturbations};
+            \node (imageMiddle) [imageblock, below of=perturbations, yshift=+0.8cm] {\includegraphics[width=2cm]{./figures/cutmix_example.png}};
+            \node (encoderStatic) [process, below of=imageMiddle, yshift=0.8cm, xshift=-1.3cm] {\small Encoder Static};
+            \node (encoderDynamic) [process, below of=imageMiddle, yshift=0.8cm, xshift=1.3cm] {\small Encoder};
+            \node (decoder) [process, below of=encoderStatic, yshift=1.2cm, xshift=1.3cm] {\small Decoder};
+            \node (imageEnd) [imageblock, below of=decoder, yshift=+0.8cm] {\includegraphics[width=2cm]{./figures/tianjin_depthmap_v1-small.png}};
+            
+            % Arrows
+            \draw [arrow] (startImage) -- (perturbations);
+            \draw [arrow] (perturbations) -- (imageMiddle);
+            \draw [arrow] (imageMiddle) -- (encoderStatic);
+            \draw [arrow] (imageMiddle) -- (encoderDynamic);
+            \draw [arrow] (encoderDynamic) -- (decoder);
+            \draw [arrow] (encoderStatic) -- (decoder);
+            \draw [arrow] (decoder) -- (imageEnd);
+            
+        \end{tikzpicture}
+        
+        \column{0.6\textwidth}
+        \pause
+        
+        \begin{itemize}
+            \item<2-> Perturbations (only for $S$)
+            \begin{itemize}
+                \item[$\in\hat{\mathcal{D}}^u$] color shift + CutMix
+                \item[$\in\mathcal{D}^l$] horizontal flip
+            \end{itemize}
+            $\leadsto$ be more robust
+            
+            \item<3-> Encoders
+            \begin{itemize}
+                \item[Normal] $\leftarrow$ DINOv2 encoder
+                \item[Static] $\leftarrow$ frozen DINOv2 encoder
+                \item Linked by a feature alignment loss
+            \end{itemize}
+            $\leadsto$ auxiliary supervision
+            
+            \item<4-> Decoder $\leftarrow$ DPT decoder (as in MiDaS)
+            
+        \end{itemize}
+    \end{columns}
+    
+\end{frame}
+
+
+\begin{frame}[noframenumbering]
     \frametitle{Backup Slides}
     \scriptsize
     
@@ -332,7 +344,7 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
 
     
 \end{frame}
-\begin{frame}
+\begin{frame}[noframenumbering]
     \scriptsize
     \textbf{Marigold}
     \begin{itemize}
@@ -349,7 +361,7 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
         \item $\rightarrow$ used in V1 to also do Metric Depth Estimation by swapping the Encoder and retaining the ZoeDepth Architecture
     \end{itemize}
 \end{frame}
-\begin{frame}        
+\begin{frame}[noframenumbering]        
     \textbf{Quantitative Results V1}
     \begin{figure}
         \centering
@@ -358,7 +370,7 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
         \label{fig:res_quant_v1}
     \end{figure}
 \end{frame}
-\begin{frame}
+\begin{frame}[noframenumbering]
     \scriptsize
     \textbf{DA-2K Benchmark}
     \begin{itemize}
@@ -376,7 +388,7 @@ Contact: \texttt{\href{mailto:bestadle@ethz.ch}{bestadle@ethz.ch}}}
         \end{itemize}
     \end{itemize}
 \end{frame}
-\begin{frame}        
+\begin{frame}[noframenumbering]        
     \textbf{Quantitative Results V2}
     \begin{figure}
         \centering
