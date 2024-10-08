@@ -1,41 +1,35 @@
 from transformers import pipeline
 from PIL import Image
-import os
-import time
 import demo
 
+
+### SETTINGS
+
+MODE = 'FILE' #what to do: either FILE or WEBCAM
+
+PIPE = 'v1_small' #pipe to load
+
+directory = "./samples" #folder to get samples from
+filename ="tea.JPG" #specific image (if empty: take first file in samples)
+
+### END SETTINGS
+
 # load pipe
-pipe_v1_small = pipeline(task="depth-estimation", model="LiheYoung/depth-anything-small-hf")
-pipe_v2_small = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2-Small-hf")
-# pipe_v2_large = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2-Large-hf")
-
-# load image
-# Specify the directory containing the images
-directory = "./samples"
-filename ="tea.JPG"
-
-# List all files in the directory
-files = os.listdir(directory)
-
-assert len(files) > 0, "cannot have an empty `./samples/` directory!"
-
-#get first image
-if filename != '':
-    first_image_path = directory+'/'+filename
+print("Loading Pipes...")
+if PIPE == 'v1_small':
+    pipe = pipeline(task="depth-estimation", model="LiheYoung/depth-anything-small-hf")
+elif PIPE == 'v2_small':
+    pipe = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2-Small-hf")
+elif PIPE == 'v2_large':
+    pipe = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2-Large-hf")
 else:
-    first_image_path = os.path.join(directory, files[0])
-image = Image.open(first_image_path)
-image.show()
+    raise LookupError("Unkown pipeline specification '"+PIPE+"'. Adjust the settings.")
+print(f"\rDone. Using '{PIPE}'.")
 
-# inference
-start_time = time.time()
-depth_v1 = pipe_v1_small(image)["depth"]
-end_time = time.time()
-print(f"Estimated Depth using V1:\t {end_time-start_time: .2f}s")
-demo.grayscale_to_gradient(depth_v1).show()
-
-start_time = time.time()
-depth_v2= pipe_v2_small(image)["depth"]
-end_time = time.time()
-print(f"Estimated Depth using V2:\t {end_time-start_time: .2f}s")
-demo.grayscale_to_gradient(depth_v2).show()
+    
+if MODE == 'FILE':
+    demo.singlefile(directory=directory, filename=filename, pipe=pipe)
+elif MODE == 'WEBCAM':
+    demo.webcam(pipe=pipe)
+else:
+    raise LookupError("Unkown mode specification '"+MODE+"'. Adjust the settings.")
